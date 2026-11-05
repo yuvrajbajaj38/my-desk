@@ -26,3 +26,4 @@
 - `config.js` contains only the Supabase publishable key, which is intended for browser use.
 - Never add a Supabase secret key, service_role key, database password, or personal data to GitHub.
 - `schema.sql` enables Row Level Security and restricts each account to its own row.
+- Deployment refresh - November 2026.
