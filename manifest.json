@@ -1,0 +1,9 @@
+{
+  "name": "My Desk",
+  "short_name": "My Desk",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4f6fb",
+  "theme_color": "#191d30",
+  "description": "Personal workspace with synced tasks, notes and JEE backlog."
+}
