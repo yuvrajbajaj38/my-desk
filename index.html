@@ -40,6 +40,8 @@
 <section class="page" id="calculator"><div class="card"><h2 style="text-align:center;margin-bottom:18px">Calculator</h2><div class="calc"><div class="screen" id="screen">0</div><div class="keys" id="keys"><button class="clear" data-v="C">C</button><button data-v="(">(</button><button data-v=")">)</button><button class="op" data-v="/">÷</button><button data-v="7">7</button><button data-v="8">8</button><button data-v="9">9</button><button class="op" data-v="*">×</button><button data-v="4">4</button><button data-v="5">5</button><button data-v="6">6</button><button class="op" data-v="-">−</button><button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button><button class="op" data-v="+">+</button><button data-v="0">0</button><button data-v=".">.</button><button data-v="del">⌫</button><button class="eq" data-v="=">=</button></div></div></div></section>
 <section class="page" id="notes"><div class="card"><div class="between"><h2>Quick notes</h2><span class="pill">Auto-saved</span></div><textarea id="notes" placeholder="Write anything here..."></textarea></div></section>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
 <script>
 const KEY='myDeskData';const $=id=>document.getElementById(id);
 let db={tasks:[],chapters:[],notes:''};
@@ -135,4 +137,5 @@ if(!had || db.chapters.length===0){db.chapters=[
 {id:301,name:'Mole Concept',subject:'Chemistry',total:13,done:0},{id:302,name:'Structure of Atom',subject:'Chemistry',total:14,done:0},{id:303,name:'States of Matter',subject:'Chemistry',total:7,done:0},{id:304,name:'Thermodynamics',subject:'Chemistry',total:19,done:0},{id:305,name:'Chemical Equilibrium',subject:'Chemistry',total:8,done:0},{id:306,name:'Ionic Equilibrium',subject:'Chemistry',total:6,done:0},{id:307,name:'Redox Reaction',subject:'Chemistry',total:3,done:0},{id:308,name:'Periodic Table',subject:'Chemistry',total:14,done:0},{id:309,name:'Chemical Bonding',subject:'Chemistry',total:26,done:0}
 ];try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}}
 render();
+initCloud().catch(err=>{console.error("My Desk cloud initialization failed:",err);setCloudStatus("Cloud setup failed to initialize. Check your connection and reload.","Setup error");});
 </script></body></html>
