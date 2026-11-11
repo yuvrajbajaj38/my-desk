@@ -1,0 +1,102 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+
+
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+
+      // New profiles and free credits are created only by registerStudentAccount (Admin SDK).
+      allow create: if false;
+
+      // Students may only maintain basic display fields. All account status,
+      // billing, credits, XP, rank, streak, and identity fields stay server-owned.
+      allow update: if isOwner(uid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'name', 'email', 'photoURL'
+        ])
+        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['name'])
+          || (request.resource.data.name is string && request.resource.data.name.size() <= 100))
+        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['email'])
+          || (request.resource.data.email is string && request.resource.data.email.size() <= 254))
+        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['photoURL'])
+          || (request.resource.data.photoURL is string && request.resource.data.photoURL.size() <= 2048));
+
+      allow delete: if false;
+
+      match /backlogs/{backlogId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      match /attempts/{attemptId} {
+        allow read: if isOwner(uid);
+        allow create, update, delete: if false;
+      }
+
+      match /books/{bookId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      match /documents/{docId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      match /artifacts/{artifactId} {
+        allow read: if isOwner(uid);
+        allow create, update, delete: if false;
+      }
+
+      match /answerKeys/{answerKeyId} {
+        allow read, write: if false;
+      }
+
+      match /creditLedger/{txId} {
+        allow read: if isOwner(uid);
+        allow write: if false;
+      }
+
+      match /subscriptions/{subId} {
+        allow read: if isOwner(uid);
+        allow write: if false;
+      }
+    }
+
+    match /publicLeaderboard/{entryId} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    match /creditConfig/{configId} {
+      // Only non-secret pricing/provider metadata lives here; public pricing pages need read access.
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /aiJobs/{jobId} {
+      allow read: if signedIn() && resource.data.uid == request.auth.uid;
+      allow write: if false;
+    }
+
+    match /processedPayments/{paymentId} {
+      allow read, write: if false;
+    }
+
+    // Device trial claims are server-only to prevent client tampering.
+    match /deviceFreeTrials/{deviceId} {
+      allow read, write: if false;
+    }
+
+    // Encrypted AI credentials are accessed only by trusted Cloud Functions.
+    match /privateConfig/{configId} {
+      allow read, write: if false;
+    }
+  }
+}
