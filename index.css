@@ -1,0 +1,19 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body, html {
+  background-color: #09090e;
+  color: #ffffff;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* यह कोड Vite की centering वाली बीमारी को खत्म करेगा */
+#root {
+  width: 100%;
+  text-align: left; 
+}
