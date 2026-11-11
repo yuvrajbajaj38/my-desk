@@ -1,6 +1,6 @@
 {
-  "name": "My Desk",
-  "short_name": "My Desk",
+  "name": "RankWorld AI",
+  "short_name": "RankWorld",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f4f6fb",

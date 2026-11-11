@@ -1,0 +1,104 @@
+/* =========================================
+   TESTIMONIALS SECTION STYLES
+   ========================================= */
+
+.testimonials-section {
+  padding: 80px 5%;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.testi-header {
+  margin-bottom: 50px;
+}
+
+.testi-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 15px;
+}
+
+.testi-subtitle {
+  color: #94a3b8;
+  font-size: 1rem;
+}
+
+/* Cards Container */
+.testi-cards {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+/* Individual Review Card */
+.testi-card {
+  background: rgba(17, 24, 39, 0.5);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 16px;
+  padding: 30px;
+  width: 350px;
+  text-align: left;
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.testi-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.stars {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  letter-spacing: 2px;
+}
+
+.review-text {
+  font-size: 0.95rem;
+  color: #e2e8f0;
+  line-height: 1.6;
+  margin-bottom: 25px;
+  font-style: italic;
+}
+
+.student-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 20px;
+}
+
+/* Circle Avatar */
+.avatar {
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(135deg, #3b82f6, #a855f7);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+}
+
+.student-name {
+  font-size: 1rem;
+  color: #f8fafc;
+  margin-bottom: 3px;
+}
+
+.student-exam {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}

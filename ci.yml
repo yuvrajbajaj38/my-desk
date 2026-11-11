@@ -1,0 +1,56 @@
+name: RankVault CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  web:
+    name: Frontend lint and production build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+          cache: npm
+      - name: Install dependencies including platform-specific optional binaries
+        run: npm ci --include=optional --prefer-online
+      - name: Verify Linux Rolldown binding is installed
+        run: node -e "require.resolve('@rolldown/binding-linux-x64-gnu')"
+      - name: Unit tests
+        run: npm test
+      - name: Lint
+        run: npm run lint
+      - name: Build
+        run: npm run build
+      - name: Confirm both applications are present
+        run: |
+          test -s dist/index.html
+          test -s dist/rankvault/index.html
+          test -s dist/config.js
+
+  functions:
+    name: Firebase Functions source validation
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: functions
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Unit tests
+        run: node --test test/*.test.js
+      - name: Validate Functions source syntax
+        run: |
+          node --check index.js
+          node --check aiProvider.js
+          node --check questionValidation.js
+          node --check cacheKeys.js

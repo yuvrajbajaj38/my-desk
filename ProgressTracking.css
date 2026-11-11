@@ -1,0 +1,329 @@
+/* ============================================
+   PROGRESS TRACKING STYLES
+   ============================================ */
+
+.progress-tracking {
+  animation: fadeIn 0.3s ease;
+}
+
+/* ============================================
+   OVERALL STATISTICS
+   ============================================ */
+
+.overall-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.stat-box {
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.5);
+  border-color: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.stat-box:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(15, 23, 42, 0.7);
+}
+
+.stat-title {
+  margin: 0 0 12px 0;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-number {
+  font-size: 2.2rem;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+}
+
+.stat-label {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.stat-box.completed {
+  border-color: rgba(16, 185, 129, 0.2);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));
+}
+
+.stat-box.completed .stat-number {
+  color: #10b981;
+}
+
+.stat-box.in-progress {
+  border-color: rgba(249, 115, 22, 0.2);
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(194, 65, 12, 0.05));
+}
+
+.stat-box.in-progress .stat-number {
+  color: #f97316;
+}
+
+.stat-box.pending {
+  border-color: rgba(100, 116, 139, 0.2);
+  background: linear-gradient(135deg, rgba(100, 116, 139, 0.1), rgba(71, 85, 105, 0.05));
+}
+
+.stat-box.pending .stat-number {
+  color: #cbd5e1;
+}
+
+.stat-box.percentage {
+  border-color: rgba(59, 130, 246, 0.2);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05));
+}
+
+.stat-box.percentage .stat-number {
+  color: #3b82f6;
+}
+
+/* ============================================
+   MAIN PROGRESS BAR
+   ============================================ */
+
+.main-progress {
+  padding: 25px;
+  margin-bottom: 30px;
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.progress-labels h4 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1.1rem;
+}
+
+.percentage-text {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #10b981;
+}
+
+.progress-bar-large {
+  width: 100%;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+}
+
+.progress-segment {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.85rem;
+  transition: all 0.5s ease;
+}
+
+.completed-seg {
+  background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.in-progress-seg {
+  background: linear-gradient(90deg, #f97316, #c2410c);
+}
+
+/* ============================================
+   DAILY PROGRESS TIMELINE
+   ============================================ */
+
+.daily-progress-section {
+  margin-bottom: 30px;
+}
+
+.daily-progress-section h4 {
+  font-size: 1.1rem;
+  color: #f8fafc;
+  margin-bottom: 20px;
+}
+
+.daily-progress-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.day-progress-item {
+  display: grid;
+  grid-template-columns: 80px 1fr 50px;
+  gap: 15px;
+  align-items: center;
+  padding: 12px 15px;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.day-progress-item:hover {
+  background: rgba(15, 23, 42, 0.6);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.day-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.day-name {
+  font-weight: bold;
+  color: #f8fafc;
+  font-size: 0.95rem;
+}
+
+.day-stats-mini {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.day-progress-bar {
+  width: 100%;
+  height: 24px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.day-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  transition: width 0.5s ease;
+  min-width: 5%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 4px;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: bold;
+}
+
+.day-percent {
+  text-align: right;
+  font-weight: bold;
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  min-width: 50px;
+}
+
+/* ============================================
+   STATUS LEGEND
+   ============================================ */
+
+.status-legend {
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  margin-bottom: 30px;
+}
+
+.status-legend h4 {
+  margin: 0 0 15px 0;
+  color: #f8fafc;
+  font-size: 1.05rem;
+}
+
+.legend-items {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #cbd5e1;
+}
+
+.legend-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.legend-dot.pending {
+  background: #64748b;
+}
+
+.legend-dot.in-progress {
+  background: #f97316;
+}
+
+.legend-dot.completed {
+  background: #10b981;
+}
+
+/* ============================================
+   QUICK ACTIONS
+   ============================================ */
+
+.quick-actions {
+  padding: 15px 20px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.action-text {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 1024px) {
+  .overall-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .legend-items {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .overall-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .day-progress-item {
+    grid-template-columns: 60px 1fr 40px;
+  }
+
+  .day-name {
+    font-size: 0.85rem;
+  }
+
+  .legend-items {
+    grid-template-columns: 1fr;
+  }
+}
