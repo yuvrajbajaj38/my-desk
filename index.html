@@ -16,6 +16,7 @@
     <input class="field" id="authPassword" type="password" placeholder="Password (at least 8 characters)" autocomplete="current-password" style="flex:1;min-width:180px">
     <button class="btn" id="signInBtn" type="button">Sign in</button>
     <button class="btn alt" id="signUpBtn" type="button">Create account</button>
+    <button class="btn gray" id="forgotPasswordBtn" type="button">Forgot password?</button>
   </div>
   <div id="signedInRow" class="row" style="display:none;margin-top:12px">
     <span class="muted" id="signedInEmail"></span>
@@ -87,6 +88,18 @@ async function authAction(mode){
   cloudUser=result.data.user;
   if(cloudUser){$('authForm').style.display='none';$('signedInRow').style.display='flex';$('signedInEmail').textContent=cloudUser.email||'Signed in';await loadCloud();}
 }
+
+async function sendPasswordReset(){
+  if(!supabaseClient){alert('Supabase configuration is missing.');return;}
+  const email=$('authEmail').value.trim();
+  if(!email){alert('First enter the email address used for your My Desk account.');$('authEmail').focus();return;}
+  setCloudStatus('Sending password reset email…','Sending');
+  const redirectTo=window.location.origin+window.location.pathname;
+  const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo});
+  if(error){setCloudStatus('Password reset failed: '+error.message,'Error');alert('Could not send reset email: '+error.message);return;}
+  setCloudStatus('Password reset link sent. Check your email inbox and spam folder.','Email sent');
+  alert('Password reset link sent. Check your email inbox and spam folder.');
+}
 async function signOut(){
   if(supabaseClient) await supabaseClient.auth.signOut();
   cloudUser=null;$('authForm').style.display='flex';$('signedInRow').style.display='none';
@@ -98,10 +111,19 @@ async function initCloud(){
   }
   supabaseClient=window.supabase.createClient(MY_DESK_CONFIG.url,MY_DESK_CONFIG.anonKey);
   $('signInBtn').onclick=()=>authAction('signin');$('signUpBtn').onclick=()=>authAction('signup');
+  $('forgotPasswordBtn').onclick=sendPasswordReset;
   $('signOutBtn').onclick=signOut;$('syncNowBtn').onclick=saveCloud;
   const {data:{session}}=await supabaseClient.auth.getSession();
   if(session){cloudUser=session.user;$('authForm').style.display='none';$('signedInRow').style.display='flex';$('signedInEmail').textContent=cloudUser.email||'Signed in';await loadCloud();}
-  supabaseClient.auth.onAuthStateChange(async(_event,session)=>{
+  supabaseClient.auth.onAuthStateChange(async(event,session)=>{
+    if(event==='PASSWORD_RECOVERY'){
+      const newPassword=prompt('Enter your new password (at least 8 characters):');
+      if(newPassword===null)return;
+      if(newPassword.length<8){alert('Password must be at least 8 characters. Open the reset email link again to retry.');return;}
+      const {error}=await supabaseClient.auth.updateUser({password:newPassword});
+      if(error){alert('Could not update password: '+error.message);setCloudStatus('Password update failed: '+error.message,'Error');}
+      else{alert('Password updated. You can now sign in with your new password.');setCloudStatus('Password updated successfully.','Password updated');}
+    }
     if(session && !cloudUser){cloudUser=session.user;$('authForm').style.display='none';$('signedInRow').style.display='flex';$('signedInEmail').textContent=cloudUser.email||'Signed in';await loadCloud();}
     else if(!session && cloudUser){cloudUser=null;$('authForm').style.display='flex';$('signedInRow').style.display='none';setCloudStatus('Signed out.','Not connected');}
   });
