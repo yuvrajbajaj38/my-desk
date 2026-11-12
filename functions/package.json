@@ -1,0 +1,13 @@
+{
+  "name": "rankvault-functions",
+  "description": "Server-side AI, credits, and payment verification for RankVault",
+  "engines": {
+    "node": "20"
+  },
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "firebase-admin": "^13.5.0",
+    "firebase-functions": "^6.4.0"
+  }
+}

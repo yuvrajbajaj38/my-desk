@@ -1,0 +1,145 @@
+/* =========================================
+   RANKVAULT AI - PRICING CARDS STYLES
+   ========================================= */
+
+.pricing-section {
+  padding: 60px 5%;
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.pricing-header h2 {
+  font-size: 2.8rem;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.pricing-header p {
+  color: #94a3b8;
+  font-size: 1.1rem;
+  margin-bottom: 60px;
+}
+
+/* कार्ड्स का लेआउट */
+.pricing-cards {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+/* 🧊 ग्लासमोर्फिज्म (Glassmorphism) कार्ड डिज़ाइन */
+.pricing-card {
+  background: rgba(13, 17, 28, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 40px 30px;
+  width: 320px;
+  text-align: left;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02), 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.pricing-card:hover {
+  transform: translateY(-10px);
+  border-color: rgba(168, 85, 247, 0.4);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(59, 130, 246, 0.1);
+}
+
+/* 🌟 बीच वाला "RankVault Pro" कार्ड (Most Popular) */
+.pricing-card.popular {
+  border: 2px solid #a855f7; /* पर्पल बॉर्डर */
+  background: rgba(18, 14, 33, 0.8);
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.2), inset 0 0 15px rgba(168, 85, 247, 0.1);
+  transform: scale(1.05); /* थोड़ा बड़ा दिखेगा */
+  z-index: 2;
+}
+
+.pricing-card.popular:hover {
+  transform: scale(1.05) translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 40px rgba(168, 85, 247, 0.4);
+}
+
+/* 🔥 Most Popular वाला बैज (Badge) */
+.popular-badge {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #3b82f6, #a855f7);
+  color: white;
+  padding: 6px 18px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.5);
+  letter-spacing: 0.5px;
+}
+
+/* टेक्स्ट स्टाइलिंग */
+.pricing-card h3 {
+  font-size: 1.6rem;
+  color: #f8fafc;
+  margin-bottom: 15px;
+}
+
+.price {
+  font-size: 3.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: baseline;
+}
+
+.currency {
+  font-size: 1.5rem;
+  color: #94a3b8;
+  margin-right: 5px;
+  font-weight: normal;
+}
+
+.duration {
+  font-size: 1rem;
+  color: #94a3b8;
+  font-weight: normal;
+  margin-left: 5px;
+}
+
+.plan-desc {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+/* फीचर्स की लिस्ट */
+.plan-features {
+  list-style: none;
+  margin-bottom: 35px;
+  padding: 0;
+}
+
+.plan-features li {
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+  color: #f8fafc;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* जो फीचर्स नहीं मिल रहे उनका रंग हल्का */
+.plan-features li.disabled {
+  color: #475569;
+}
+
+/* बटन्स को पूरा चौड़ा करने के लिए */
+.w-100 {
+  width: 100%;
+}

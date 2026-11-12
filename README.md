@@ -1,28 +1,91 @@
-# My Desk — cloud version
+# RankWorld AI
 
-## Included
-- `index.html` — My Desk dashboard
-- `config.js` — Supabase Project URL + publishable key
-- `schema.sql` — private user data table and Row Level Security policies
-- `manifest.json`, `sw.js` — installable PWA shell
+Student platform for JEE/NEET practice: mock tests, notes extraction, question bank, backlog planner, and results.
 
-## Setup (do these in order)
-1. In Supabase, open **SQL Editor** → **New query**.
-2. Paste all of `schema.sql` and click **Run**.
-3. Upload all six files in this folder to the root of your GitHub repository `my-desk`, replacing the existing files when asked.
-4. Vercel will redeploy automatically after the GitHub commit. Open the Vercel production URL.
-5. In Supabase **Authentication → URL Configuration**, set the Site URL to your Vercel production URL and add that same URL (and `https://your-vercel-domain/*`) to Redirect URLs.
-6. Create a My Desk account with email/password, confirm the email if Supabase asks, then sign in.
-7. On iPhone, open the same Vercel URL in Safari, sign in with the same account, then Share → Add to Home Screen.
+## Local development
 
-## Important data behavior
-- First successful sign-in on the laptop uploads the local browser data if the cloud table has no row for this account.
-- When a cloud row already exists, the app loads that cloud data on sign-in.
-- Use the same account on both devices.
-- Keep using Export backup in the Backlog Manager as an extra backup.
-- This simple version syncs after edits and when you press **Sync now**. Avoid editing on both devices at exactly the same time.
+1. Copy `.env.example` to `.env.local`.
+2. Fill `VITE_FIREBASE_*` with the Firebase **web** config (this is public client config, not an AI secret).
+3. Copy `functions/.env.example` to `functions/.env` for local Functions configuration. Do not add an API key to either file.
+4. Install and run:
 
-## Security
-- `config.js` contains only the Supabase publishable key, which is intended for browser use.
-- Never add a Supabase secret key, service_role key, database password, or personal data to GitHub.
-- `schema.sql` enables Row Level Security and restricts each account to its own row.
+```bash
+npm install
+npm run dev
+```
+
+Never put AI provider keys, `AI_CONFIG_ENCRYPTION_KEY`, Razorpay secrets, or service-account credentials in Vite env files.
+
+## Production backend and AI provider key
+
+```bash
+firebase login
+firebase use <your-firebase-project-id>
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+firebase functions:secrets:set AI_CONFIG_ENCRYPTION_KEY
+firebase deploy --only firestore:rules,functions
+```
+
+The secret must be a 64-character hexadecimal string generated from 32 random bytes. Back it up securely. After creating and verifying your admin account and granting the `admin: true` custom claim, use the Admin Panel to choose the provider, model, optional base URL, and save the provider API key. The callable encrypts the key with AES-256-GCM before storing it in a server-only Firestore document. The browser never reads the stored key.
+
+Provider options:
+- `gemini` — defaults to Gemini `generateContent` and `gemini-3.1-flash-lite`.
+- `openai` — defaults to OpenAI-compatible chat completions and `gpt-4o-mini`.
+- `custom` — requires a custom endpoint URL in Admin Panel.
+
+For local emulation, use non-secret provider settings in `functions/.env`; do not put API keys there. Rotate the provider key from Admin Panel. If the encryption secret is rotated, re-save the provider API key.
+
+Razorpay secrets are not required while payment business rules remain unapproved. Payment fulfillment stays disabled.
+
+## Hosting on Vercel
+
+Import this GitHub repository into Vercel. Use the root directory `.`, install command `npm ci --include=optional`, build command `npm run build`, and output directory `dist`. See `VERCEL_DEPLOYMENT.md`. Firebase remains a backend provider for the original RankVault features; Vercel is the selected website host.
+
+## Scripts
+
+- `npm run lint`
+- `npm run build`
+
+## Email authentication and Admin Panel
+
+- Student accounts use Firebase Email/Password authentication, email verification, and password reset. Enable **Email/Password** in Firebase Console → Authentication → Sign-in method.
+- Admin routes and callable functions require the Firebase Auth custom claim `admin: true`; a client cannot grant itself admin access.
+- Create the first admin only from a trusted machine with Firebase Admin Application Default Credentials: `node scripts/set-admin.js verified-admin@example.com`. Sign out and back in after granting the claim.
+- Admin Panel controls the free signup credit amount, plan prices/credit quantities, AI provider/model/base URL, and encrypted AI API key. New registrations read the server-managed `creditConfig/default` value (fallback 50).
+- The Admin Panel sends an API key only to an admin-claim-protected callable. The key is encrypted server-side with AES-256-GCM and stored in a Firestore collection that client rules deny to all users.
+- Student account listing/disable/enable and settings updates run through admin-claim-protected Cloud Functions.
+
+## Deploy
+
+This is a Vite + React project. In Vercel, use Root Directory `.` (or the folder containing this `package.json`), Build Command `npm run build`, and Output Directory `dist`. Set the `VITE_FIREBASE_*` variables from `.env.example` in Vercel. Deploy Firebase rules and Functions separately with `firebase deploy --only firestore:rules,functions` after configuring Firebase project access and secrets.
+
+**Important existing limitation:** payment fulfillment is intentionally disabled in the source (`PAYMENT_BUSINESS_RULES_READY = false`). Admin-editable pricing is displayed and used to form payment-order amounts if payments are later enabled, but checkout will continue to reject orders until the payment/subscription fulfillment rules are completed and tested.
+
+
+## Free-trial protection
+New student profiles and free-credit grants are provisioned server-side. A server-only device fingerprint claim prevents repeated free-trial claims from the same browser/device fingerprint. This reduces casual multi-email abuse but is not a guaranteed physical-device identity; configure Firebase App Check before public launch. See `ADMIN_SETUP.md`.
+
+
+## Production gate
+
+Before public launch, require a green GitHub Actions run (clean `npm ci`, lint, Vite build, and Functions syntax checks), configure Firebase App Check reCAPTCHA v3 and Firebase Auth email/password, deploy Firestore rules and Functions, seed platform settings, provision the verified admin custom claim, and run a staging signup/credit/AI smoke test. Paid checkout is not enabled; keep it hidden or clearly labelled unavailable until payment fulfillment is implemented. See `ADMIN_SETUP.md` and `RELEASE_STATUS.md`.
+
+
+## Unified My Study Desk site
+This repo now assembles the existing My Study Desk PWA at `/` and the original RankWorld AI React app at `/rankvault/` on one hosting origin. The My Desk sidebar includes a RankWorld AI link. Run `npm run build` to produce both paths. See `UNIFIED_SITE_MIGRATION.md` for setup and the remaining authentication/data consolidation and production gates.
+
+
+## One-login architecture (Supabase primary)
+- My Study Desk remains signed in with the existing Supabase Auth project.
+- RankWorld React app uses the same Supabase session as its only visible sign-in.
+- A Firebase HTTPS exchange endpoint verifies the Supabase JWT and confirmed email, then issues a Firebase custom token for existing RankVault Firestore/Storage/Functions. Matching an existing verified email preserves that Firebase UID and its Firestore data.
+- This is a compatibility bridge, not a full database migration: My Study Desk data remains in Supabase; RankVault data remains in Firebase. A user sees one login, while the two backends remain separate.
+
+### Required one-time server setup
+1. Install Functions dependencies: `cd functions && npm install`.
+2. Set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` in `functions/.env` to the existing Supabase project values. The publishable key is public; never use a service-role/secret key.
+3. Deploy Functions: `firebase deploy --only functions`.
+5. Ensure Supabase email confirmation is enabled and configure Site URL / Redirect URLs for the deployed RankWorld domain.
+6. Configure Vercel `VITE_FIREBASE_*` values and deploy. Keep the Supabase publishable key public; never use service-role key in Vercel frontend variables.
+
+The exchange endpoint validates the bearer token directly with Supabase Auth (`/auth/v1/user`), so it supports the signing method already configured in the existing Supabase project.

@@ -1,0 +1,311 @@
+/* ============================================
+   STUDY TIME STEP STYLES
+   ============================================ */
+
+.study-time-step {
+  
+}
+
+.mode-selector {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.mode-btn {
+  padding: 15px;
+  background: rgba(15, 23, 42, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mode-btn:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.mode-btn.active {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.mode-content {
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 30px;
+}
+
+/* ============================================
+   SIMPLE MODE
+   ============================================ */
+
+.input-section {
+  margin-bottom: 25px;
+}
+
+.input-section label {
+  display: block;
+  font-size: 1rem;
+  color: #cbd5e1;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.time-input-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.time-input-group input {
+  flex: 1;
+  max-width: 150px;
+  padding: 12px 15px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: bold;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.time-input-group input:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
+}
+
+.unit {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.input-hint {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-top: 8px;
+}
+
+.preset-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.preset-label {
+  font-weight: 600;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.preset-btn {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #94a3b8;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.preset-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.preset-btn.active {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: #10b981;
+  color: #10b981;
+}
+
+/* ============================================
+   CUSTOM SCHEDULE MODE
+   ============================================ */
+
+.schedule-label {
+  color: #cbd5e1;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.schedule-input {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.schedule-input label {
+  font-size: 1rem;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+.time-hint {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.schedule-summary {
+  text-align: center;
+  padding: 15px;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 8px;
+}
+
+.schedule-summary .summary-text {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+}
+
+.schedule-summary strong {
+  color: #10b981;
+}
+
+/* ============================================
+   DEADLINE SECTION
+   ============================================ */
+
+.deadline-section {
+  margin-bottom: 30px;
+}
+
+.deadline-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.deadline-tab {
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.deadline-tab:hover {
+  color: #cbd5e1;
+}
+
+.deadline-tab.active {
+  color: #10b981;
+  border-bottom-color: #10b981;
+}
+
+.deadline-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.deadline-content label {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+.date-input {
+  padding: 12px 15px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.date-input:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
+}
+
+/* ============================================
+   TIMELINE SUMMARY
+   ============================================ */
+
+.timeline-summary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  padding: 20px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+.summary-row .label {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.summary-row .value {
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+.summary-row.target-row {
+  grid-column: 1 / -1;
+  background: rgba(16, 185, 129, 0.1);
+  padding: 15px;
+  border-radius: 8px;
+  border: none;
+}
+
+.summary-row.target-row .value {
+  color: #10b981;
+}
+
+@media (max-width: 768px) {
+  .mode-selector {
+    grid-template-columns: 1fr;
+  }
+
+  .schedule-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .timeline-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-row.target-row {
+    grid-column: auto;
+  }
+}

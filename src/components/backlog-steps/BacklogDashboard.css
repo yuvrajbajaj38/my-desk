@@ -1,0 +1,367 @@
+/* ============================================
+   BACKLOG DASHBOARD STYLES
+   ============================================ */
+
+.backlog-dashboard {
+  
+}
+
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 35px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dashboard-header h3 {
+  font-size: 1.8rem;
+  color: #f8fafc;
+  margin-bottom: 8px;
+}
+
+.dashboard-header p {
+  color: #94a3b8;
+  font-size: 1rem;
+}
+
+/* ============================================
+   DASHBOARD TABS
+   ============================================ */
+
+.dashboard-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+  color: #cbd5e1;
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.tab-btn.active {
+  color: #10b981;
+  border-bottom-color: #10b981;
+}
+
+/* ============================================
+   DASHBOARD VIEW
+   ============================================ */
+
+.dashboard-view {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* ============================================
+   STATS GRID
+   ============================================ */
+
+.stats-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.5);
+  border-color: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(15, 23, 42, 0.7);
+}
+
+.stat-emoji {
+  font-size: 2.2rem;
+  display: flex;
+  align-items: center;
+  min-width: 50px;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #f8fafc;
+}
+
+.stat-subtext {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.stat-card.target-card {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.stat-card.target-card .stat-value,
+.stat-card.target-card .stat-subtext {
+  color: #10b981;
+}
+
+/* ============================================
+   PROGRESS SECTION
+   ============================================ */
+
+.progress-section {
+  padding: 25px;
+  margin-bottom: 30px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.progress-header h4 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1.1rem;
+}
+
+.progress-percent {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #10b981;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 30px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #059669);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.85rem;
+  transition: width 0.5s ease;
+  min-width: 50px;
+}
+
+.progress-text {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   SUBJECT PROGRESS
+   ============================================ */
+
+.subject-progress-section {
+  margin-bottom: 30px;
+}
+
+.subject-progress-section h4 {
+  font-size: 1.1rem;
+  color: #f8fafc;
+  margin-bottom: 20px;
+}
+
+.subject-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.subject-progress-card {
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.5);
+  border-color: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.subject-progress-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(15, 23, 42, 0.7);
+}
+
+.subject-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.subject-header h5 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1rem;
+}
+
+.subject-badge {
+  font-size: 0.8rem;
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.subject-bar {
+  width: 100%;
+  height: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.subject-progress {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.subject-hours {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+/* ============================================
+   INSIGHTS SECTION
+   ============================================ */
+
+.insights-section {
+  margin-bottom: 30px;
+}
+
+.insights-section h4 {
+  font-size: 1.1rem;
+  color: #f8fafc;
+  margin-bottom: 20px;
+}
+
+.insights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.insight-card {
+  padding: 15px;
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.2);
+  border-radius: 10px;
+  border-left: 3px solid #3b82f6;
+}
+
+.insight-card p {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* ============================================
+   DASHBOARD CONTROLS
+   ============================================ */
+
+.dashboard-controls {
+  display: flex;
+  gap: 15px;
+  margin-top: 40px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.dashboard-controls button {
+  min-width: 150px;
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+
+.empty-message {
+  text-align: center;
+  color: #94a3b8;
+  padding: 40px 20px;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 1024px) {
+  .stats-grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .subject-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .subject-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-controls {
+    flex-direction: column;
+  }
+
+  .dashboard-controls button {
+    width: 100%;
+  }
+}
