@@ -72,14 +72,13 @@ Before public launch, require a green GitHub Actions run (clean `npm ci`, lint, 
 
 
 ## Unified My Study Desk site
-This repo now assembles the existing My Study Desk PWA at `/` and the original RankWorld AI React app at `/rankvault/` on one hosting origin. The My Desk sidebar includes a RankWorld AI link. Run `npm run build` to produce both paths. See `UNIFIED_SITE_MIGRATION.md` for setup and the remaining authentication/data consolidation and production gates.
+RankWorld AI's React/Vite application is the primary UI at `/`. My Study Desk is not the homepage or a separate destination. Selected study-workspace capabilities are being integrated into RankWorld AI's existing design. Run `npm run build` to build the RankWorld AI app directly. See `UNIFIED_SITE_MIGRATION.md`.
 
 
-## One-login architecture (Supabase primary)
-- My Study Desk remains signed in with the existing Supabase Auth project.
-- RankWorld React app uses the same Supabase session as its only visible sign-in.
-- A Firebase HTTPS exchange endpoint verifies the Supabase JWT and confirmed email, then issues a Firebase custom token for existing RankVault Firestore/Storage/Functions. Matching an existing verified email preserves that Firebase UID and its Firestore data.
-- This is a compatibility bridge, not a full database migration: My Study Desk data remains in Supabase; RankVault data remains in Firebase. A user sees one login, while the two backends remain separate.
+## Existing account/data boundary
+- Preserve existing RankWorld AI Firebase accounts and records.
+- Any optional Supabase-backed study feature must use a verified, user-scoped integration; do not replace RankWorld AI's primary UI or auth without a tested migration plan.
+- No production data migration is implied by the UI integration.
 
 ### Required one-time server setup
 1. Install Functions dependencies: `cd functions && npm install`.
