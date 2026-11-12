@@ -479,7 +479,7 @@ exports.runAiJob = onCall({
 
   let cost = 0;
   try {
-    cost = await debitCredits(uid, jobType);
+    cost = await debitCredits(uid, jobType, 1, request.auth.token.admin === true);
   } catch (error) {
     await markFailed(cache?.ref, error.message);
     throw error;
