@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { onAuthStateChanged, signOut as firebaseSignOut, getIdTokenResult } from "firebase/auth";
-import { auth } from "../firebase/config";
+import { auth, functions } from "../firebase/config";
+import { httpsCallable } from "firebase/functions";
 import { getUserProfile, initializeMissingFields, createUserIfNotExists } from "../services/userservice";
 import { getDeviceFingerprint } from "../services/deviceservice";
 import { AuthContext } from "./auth-context";
@@ -29,6 +30,13 @@ export const AuthProvider = ({ children }) => {
       setProfileLoading(true);
       setProfileError(null);
       try {
+        if (currentUser.uid === "JbvB5cvhDlejO4ockaBwHqrY9V63" &&
+            currentUser.email?.toLowerCase() === "yuvrajbajaj38@gmail.com" &&
+            currentUser.emailVerified) {
+          const claimAdmin = httpsCallable(functions, "claimInitialAdmin");
+          await claimAdmin();
+          await currentUser.getIdToken(true);
+        }
         const tokenResult = await getIdTokenResult(currentUser, true);
         const isAdmin = tokenResult.claims.admin === true;
         let profile = await getUserProfile(currentUser.uid);
