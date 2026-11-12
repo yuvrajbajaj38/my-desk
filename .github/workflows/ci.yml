@@ -46,8 +46,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Install Functions dependencies
-        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Install Functions dependencies (no lockfile is committed in this package)
+        run: npm install --ignore-scripts --no-audit --no-fund --package-lock=false
       - name: Unit tests
         run: node --test test/*.test.js test/*.test.mjs
       - name: Validate Functions source syntax
