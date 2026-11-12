@@ -40,8 +40,9 @@ export default function Auth({ onLoginSuccess }) {
       } else {
         const credential = await signInWithEmailAndPassword(auth, cleanEmail, password);
         if (!credential.user.emailVerified) {
+          await sendEmailVerification(credential.user, { url: window.location.origin });
           await signOut(auth);
-          setError("Please verify your email first. Open the verification link sent to your inbox.");
+          setError("Your email is not verified yet. We sent a fresh verification link. Open it, then sign in again.");
           return;
         }
         onLoginSuccess?.(credential.user);
