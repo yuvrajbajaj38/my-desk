@@ -29,11 +29,11 @@ jobs:
         run: npm run lint
       - name: Build
         run: npm run build
-      - name: Confirm both applications are present
+      - name: Confirm RankWorld AI is the root application
         run: |
           test -s dist/index.html
-          test -s dist/rankvault/index.html
-          test -s dist/config.js
+          test -d dist/assets
+          test ! -e dist/rankvault/index.html
 
   functions:
     name: Firebase Functions source validation
