@@ -1,10 +1,8 @@
 import { useState } from "react";
 import {
   createUserWithEmailAndPassword,
-  sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
-  signOut,
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../firebase/config";
@@ -34,18 +32,10 @@ export default function Auth({ onLoginSuccess }) {
       } else if (mode === "signup") {
         const credential = await createUserWithEmailAndPassword(auth, cleanEmail, password);
         if (name.trim()) await updateProfile(credential.user, { displayName: name.trim() });
-        await sendEmailVerification(credential.user, { url: window.location.origin });
-        await signOut(auth);
-        setNotice("Account created. Verify your email, then sign in.");
-        setMode("login");
+        setNotice("Account created successfully. You are now signed in.");
+        onLoginSuccess?.(credential.user);
       } else {
         const credential = await signInWithEmailAndPassword(auth, cleanEmail, password);
-        if (!credential.user.emailVerified) {
-          await sendEmailVerification(credential.user, { url: window.location.origin });
-          await signOut(auth);
-          setError("Your email is not verified yet. We sent a fresh verification link. Open it, then sign in again.");
-          return;
-        }
         onLoginSuccess?.(credential.user);
       }
     } catch (err) {
