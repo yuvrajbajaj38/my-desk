@@ -262,3 +262,53 @@
     transition: none !important;
   }
 }
+
+/* Dedicated phone layout: compact cards, touch targets and fixed app navigation */
+.mobile-student-nav { display: none; }
+@media (max-width: 640px) {
+  .dashboard-main { padding: 18px 14px 104px; width: 100%; overflow: hidden; }
+  .dash-top-bar { display: grid; grid-template-columns: 1fr; gap: 14px; margin-bottom: 20px; }
+  .welcome-text h2 { font-size: clamp(1.45rem, 6vw, 1.9rem); line-height: 1.2; }
+  .welcome-text p { font-size: .88rem; }
+  .gamification-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px; border-radius: 14px; overflow: visible; }
+  .stat-badge { border: 0; padding: 4px; gap: 8px; min-width: 0; }
+  .stat-icon { font-size: 1.35rem; }
+  .stat-val { font-size: 1rem; }
+  .stat-text { font-size: .62rem; letter-spacing: .2px; }
+  .leaderboard-btn { grid-column: 1 / -1; width: 100%; padding: 12px; }
+  .dash-right { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: stretch; }
+  .big-credit-wallet { padding: 12px; border-radius: 13px; gap: 10px; min-width: 0; }
+  .wallet-icon { font-size: 1.6rem; }
+  .wallet-count { font-size: 1.45rem; }
+  .wallet-label { font-size: .65rem; letter-spacing: .4px; }
+  .logout-btn { padding: 9px 13px; font-size: .82rem; }
+  .action-hub-3 { grid-template-columns: minmax(0, 1fr); gap: 14px; margin-bottom: 20px; }
+  .action-box { padding: 18px; border-radius: 15px; }
+  .box-header h3 { font-size: 1.15rem; }
+  .box-desc { font-size: .85rem; }
+  .box-settings { padding: 12px; gap: 10px; }
+  .action-btn { padding: 13px; min-height: 46px; }
+  .analytics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 18px; }
+  .premium-card { padding: 16px; border-radius: 14px; min-width: 0; }
+  .premium-card h2 { font-size: 1.45rem; overflow-wrap: anywhere; }
+  .premium-card h3 { font-size: 1.05rem !important; }
+  .history-section { padding: 16px; }
+  .history-row { align-items: flex-start; gap: 10px; padding: 12px; }
+  .h-left { gap: 9px; min-width: 0; }
+  .h-left h4 { font-size: .88rem; }
+  .h-left p { font-size: .72rem; }
+  .h-icon { font-size: 1.25rem; padding: 7px; }
+  .h-right { gap: 7px; }
+  .score { font-size: 1.05rem; }
+  .review-btn { padding: 7px 10px; font-size: .75rem; }
+  .mobile-student-nav {
+    position: fixed; z-index: 1000; left: 10px; right: 10px; bottom: max(10px, env(safe-area-inset-bottom));
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; padding: 8px 5px;
+    background: rgba(9, 12, 24, .96); border: 1px solid rgba(168, 85, 247, .35);
+    border-radius: 18px; box-shadow: 0 10px 35px rgba(0,0,0,.45); backdrop-filter: blur(18px);
+  }
+  .mobile-student-nav button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border: 0; background: transparent; color: #cbd5e1; min-height: 48px; cursor: pointer; }
+  .mobile-student-nav button span { font-size: 1.25rem; line-height: 1; }
+  .mobile-student-nav button small { font-size: .65rem; }
+}
+@media (min-width: 641px) { .mobile-student-nav { display: none !important; } }
