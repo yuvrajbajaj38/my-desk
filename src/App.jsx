@@ -106,8 +106,7 @@ function App() {
           ← Back
         </button>
         <Auth
-          onLoginSuccess={async () => {
-            await refreshProfile();
+          onLoginSuccess={() => {
             setShowAuth(false);
             setActiveTab("student-dashboard");
           }}
