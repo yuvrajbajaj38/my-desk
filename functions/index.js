@@ -24,58 +24,6 @@ function requireAdmin(request) {
 }
 
 
-// Supabase is the only user-facing identity provider. This endpoint asks the
-// Supabase Auth server to validate the bearer token, requires a confirmed
-// email, maps an existing Firebase account by verified email (preserving its
-// Firestore UID/data), and issues a Firebase custom token for legacy services.
-const supabaseUrl = (process.env.SUPABASE_URL || "https://icgbufofhubjnrekedoa.supabase.co").replace(/\/$/, "");
-const supabasePublishableKey = process.env.SUPABASE_PUBLISHABLE_KEY || "sb_publishable_CVWGeQ2kx_zx0u58G9TeMw_64VEx55k";
-exports.exchangeSupabaseToken = onRequest({ cors: true, timeoutSeconds: 30 }, async (req, res) => {
-  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed." });
-  const authorization = String(req.headers.authorization || "");
-  const match = authorization.match(/^Bearer\s+(.+)$/i);
-  if (!match) return res.status(401).json({ error: "Supabase sign-in required." });
-  try {
-    // /auth/v1/user validates the access-token signature, issuer and expiry at
-    // Supabase itself. This supports the project's configured signing method.
-    const verifiedResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
-      headers: { apikey: supabasePublishableKey, Authorization: `Bearer ${match[1]}` },
-    });
-    if (!verifiedResponse.ok) return res.status(401).json({ error: "Supabase session is invalid or expired. Sign in again." });
-    const supabaseUser = await verifiedResponse.json();
-    const supabaseUid = String(supabaseUser.id || "");
-    const email = String(supabaseUser.email || "").trim().toLowerCase();
-    if (!supabaseUid || !email || !(supabaseUser.email_confirmed_at || supabaseUser.confirmed_at)) {
-      return res.status(403).json({ error: "Verify your email in Supabase before opening RankVault features." });
-    }
-
-    const firebaseAuth = getAuth();
-    let firebaseUser;
-    try {
-      // Same verified email keeps an existing RankVault UID and its Firestore data.
-      firebaseUser = await firebaseAuth.getUserByEmail(email);
-      if (firebaseUser.disabled) return res.status(403).json({ error: "This RankVault account is disabled. Contact support." });
-      const updates = {};
-      const displayName = String(supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || "").trim();
-      if (displayName && firebaseUser.displayName !== displayName) updates.displayName = displayName;
-      if (Object.keys(updates).length) firebaseUser = await firebaseAuth.updateUser(firebaseUser.uid, updates);
-    } catch (error) {
-      if (error.code !== "auth/user-not-found") throw error;
-      firebaseUser = await firebaseAuth.createUser({
-        uid: supabaseUid,
-        email,
-        emailVerified: true,
-        displayName: String(supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || "Student").trim().slice(0, 100),
-      });
-    }
-    const customToken = await firebaseAuth.createCustomToken(firebaseUser.uid, { supabaseUid });
-    return res.status(200).json({ customToken, firebaseUid: firebaseUser.uid });
-  } catch (error) {
-    console.error("Supabase/Firebase token exchange failed:", error.message);
-    return res.status(401).json({ error: "Could not establish the RankWorld session. Please sign in again." });
-  }
-});
-
 const DEFAULT_PLATFORM_SETTINGS = {
   freeSignupCredits: 50,
   proPriceInr: 159,
