@@ -29,11 +29,6 @@ export const AuthProvider = ({ children }) => {
       setProfileLoading(true);
       setProfileError(null);
       try {
-        if (!currentUser.emailVerified) {
-          await firebaseSignOut(auth);
-          if (active) setProfileError("Verify your email before using your account.");
-          return;
-        }
         const tokenResult = await getIdTokenResult(currentUser, true);
         const isAdmin = tokenResult.claims.admin === true;
         let profile = await getUserProfile(currentUser.uid);
