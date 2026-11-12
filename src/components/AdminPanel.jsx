@@ -8,6 +8,7 @@ const saveSettings = httpsCallable(functions, "adminUpdateSettings");
 const listUsers = httpsCallable(functions, "adminListUsers");
 const changeUser = httpsCallable(functions, "adminUpdateUser");
 const saveAiKey = httpsCallable(functions, "adminSetAiKey");
+const grantCredits = httpsCallable(functions, "adminGrantCredits");
 
 export default function AdminPanel({ onBack }) {
   const [settings, setSettings] = useState(null);
@@ -17,6 +18,8 @@ export default function AdminPanel({ onBack }) {
   const [error, setError] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [savingKey, setSavingKey] = useState(false);
+  const [creditAmounts, setCreditAmounts] = useState({});
+  const [grantingUid, setGrantingUid] = useState("");
   const refresh = async () => {
     setBusy(true); setError("");
     try {
@@ -57,6 +60,24 @@ export default function AdminPanel({ onBack }) {
     try { await changeUser({ uid, action }); setMessage(`Student ${action} applied.`); await refresh(); }
     catch (e) { setError(e.message || "Student update failed."); }
   };
+  const sendCredits = async (uid) => {
+    const amount = Number(creditAmounts[uid]);
+    if (!Number.isSafeInteger(amount) || amount < 1) {
+      setError("Enter a valid credit amount (minimum 1).");
+      return;
+    }
+    setGrantingUid(uid); setError(""); setMessage("");
+    try {
+      await grantCredits({ uid, amount });
+      setMessage(`${amount.toLocaleString()} credits successfully added to student.`);
+      setCreditAmounts((prev) => ({ ...prev, [uid]: "" }));
+      await refresh();
+    } catch (e) {
+      setError(e.message || "Credit transfer failed.");
+    } finally {
+      setGrantingUid("");
+    }
+  };
   if (busy && !settings) return <section className="rv-admin"><p>Loading secure admin settings…</p></section>;
   return <section className="rv-admin">
     <div className="rv-admin-head"><div><p className="rv-kicker">RANKVAULT CONTROL CENTER</p><h1>Admin Panel</h1><p>Server-verified administrator access</p></div><button onClick={onBack}>← Back</button></div>
@@ -72,6 +93,6 @@ export default function AdminPanel({ onBack }) {
       <label>AI API base URL<input type="url" value={settings.aiBaseUrl || ""} onChange={e=>update("aiBaseUrl",e.target.value)} placeholder="Provider endpoint (optional)" /></label>
     </div><p className="rv-admin-note">API keys are encrypted on the server using AI_CONFIG_ENCRYPTION_KEY. The raw key is not stored in browser storage or readable Firestore.</p><button className="rv-admin-save" type="submit">Save platform settings</button></form>}
     <form className="rv-admin-card" onSubmit={saveKey}><h2>AI Provider API Key</h2><label>New API key<input type="password" autoComplete="new-password" value={apiKey} onChange={e=>setApiKey(e.target.value)} placeholder="Paste new provider API key" minLength={12} required /></label><p className="rv-admin-note">First configure AI_CONFIG_ENCRYPTION_KEY in Firebase Functions Secret Manager (64-character hex value), then deploy Functions. The key is sent to a protected callable and encrypted before storage.</p><button className="rv-admin-save" type="submit" disabled={savingKey || !apiKey}>{savingKey ? "Saving securely…" : "Save encrypted API key"}</button></form>
-    <div className="rv-admin-card"><div className="rv-users-title"><h2>Student accounts</h2><button onClick={refresh}>Refresh</button></div><div className="rv-users-list">{users.map(user=><div className="rv-user-row" key={user.uid}><div><strong>{user.displayName || user.email || "Student"}</strong><small>{user.email} · {user.disabled ? "Disabled" : "Active"}</small></div><button onClick={()=>userAction(user.uid,user.disabled ? "enable" : "disable")}>{user.disabled ? "Enable" : "Disable"}</button></div>)}</div></div>
+    <div className="rv-admin-card"><div className="rv-users-title"><h2>Student accounts & credit transfer</h2><button type="button" onClick={refresh}>Refresh</button></div><div className="rv-users-list">{users.map(user=><div className="rv-user-row" key={user.uid}><div><strong>{user.displayName || user.email || "Student"}</strong><small>{user.email} · {user.disabled ? "Disabled" : "Active"} · {Number(user.credits || 0).toLocaleString()} credits</small><div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap",marginTop:8}}><input aria-label={"Credits to grant to "+(user.email || user.uid)} type="number" min="1" max="10000000" step="1" placeholder="Credits to add" value={creditAmounts[user.uid] || ""} onChange={e=>setCreditAmounts(prev=>({...prev,[user.uid]:e.target.value}))} style={{width:130}} /><button type="button" disabled={grantingUid===user.uid || !creditAmounts[user.uid]} onClick={()=>sendCredits(user.uid)}>{grantingUid===user.uid ? "Sending…" : "Grant credits"}</button></div></div><button type="button" onClick={()=>userAction(user.uid,user.disabled ? "enable" : "disable")}>{user.disabled ? "Enable" : "Disable"}</button></div>)}</div></div>
   </section>;
 }
