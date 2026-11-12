@@ -1,21 +1,19 @@
-# RankWorld AI — unified website architecture
+# RankWorld AI — primary application architecture
 
-## Selected stack
-- Website hosting and deployment: Vercel
-- Source control and CI: GitHub
-- RankVault student testing/AI backend: existing Firebase Auth, Firestore, Storage and Cloud Functions
-- Existing workspace cloud sync: existing Supabase Auth and database
+## Product direction
+- RankWorld AI is the primary product and the only primary UI.
+- The existing RankWorld AI React/Vite application is served at `/`.
+- My Study Desk is not the homepage, shell, or separate product destination.
+- Reuse selected My Study Desk capabilities inside RankWorld AI's existing visual system: study planner, lecture tracking, backlog planning, daily targets, tasks, quick notes, calculator, and progress tracking.
+- Keep RankWorld AI's existing landing page, authentication flow, student dashboard, mock tests, CBT, question bank, notes AI, leaderboard, and admin tools.
 
-## One site origin
-- `/` serves the existing student workspace/PWA, branded RankWorld AI.
-- `/rankvault/` serves the original React/Vite test and AI application, also branded RankWorld AI.
-- Vite builds the React application to `dist/rankvault/`; `scripts/assemble-site.js` copies the workspace shell to `dist/`.
+## Build and routing
+- Vercel builds the root Vite application directly to `dist/` using `npm run build`.
+- Do not copy the standalone My Study Desk HTML shell over `dist/index.html`.
+- Legacy `/my-study-desk` URLs redirect to `/`.
+- Do not introduce a separate `/rankvault/` primary app path.
 
-## Important boundary
-This is one deployable website and one brand, but not yet one identity/database. The workspace currently signs users in with Supabase; the test/AI application signs users in with Firebase. They have separate user identifiers, sessions and data. A safe true account migration needs access to both live projects, backups, a user-ID mapping strategy, migration scripts, data reconciliation, and staging sign-off. No production data has been moved by this package.
-
-## Hosting
-Deploy the repository from GitHub to Vercel using root `.`, `npm ci --include=optional`, `npm run build`, and output directory `dist`. See `VERCEL_DEPLOYMENT.md`.
-
-## Preserve old services until verified
-Do not delete the existing Firebase or Supabase projects, disable their auth providers, rotate production secrets, or remove old account owners until backups and new-owner access are verified. No password/OTP sharing or security bypass is needed or appropriate.
+## Data safety
+- Preserve existing Firebase and Supabase data and accounts.
+- Integrate features through explicit adapters and user-scoped persistence. Do not silently overwrite, migrate, or delete production records.
+- Any cross-backend identity/data migration requires backups, mapping, staging tests, and explicit sign-off.
