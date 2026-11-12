@@ -1,12 +1,12 @@
 # RankWorld AI — release status
 
 ## What this package contains
-- One branded website build with the workspace at `/` and the original React/Vite student test application at `/rankvault/`.
-- Existing My Study Desk workspace source and PWA shell retained.
+- RankWorld AI React/Vite application is the primary UI at `/`.
+- My Study Desk is not the primary UI, homepage, or separate destination; selected capabilities are integrated into RankWorld AI's design.
 - Original RankVault React components, services, Firebase Functions, Firestore rules/indexes, Storage rules and AI provider integration retained.
 - Vercel selected as the website host; GitHub Actions CI is configured.
 - Product-facing brand text updated to RankWorld AI.
-- Vercel routing configured to serve real static assets rather than rewrite every `/rankvault/*` request to HTML.
+- Vercel builds the RankWorld AI Vite application directly to `dist/`.
 
 ## Checks completed in this workspace
 - `node --test functions/test/*.test.js`: PASS (7/7).
@@ -36,4 +36,4 @@
 7. Test the Supabase-to-Firebase token bridge with an existing Firebase email and a new Supabase email; verify existing Firestore UID/data is preserved and new profiles provision correctly. Preserve backups before enabling for real users.
 8. Keep paid checkout disabled until the payment flow is production-safe.
 
-This is a unified deployment source candidate, **not a certified production-ready release**. A ZIP alone cannot connect GitHub/Vercel accounts, configure live secrets, migrate production user identities, or verify a live deployment.
+The product direction is RankWorld-first. This is **not a certified production-ready release**. A ZIP alone cannot connect GitHub/Vercel accounts, configure live secrets, migrate production user identities, or verify a live deployment.
