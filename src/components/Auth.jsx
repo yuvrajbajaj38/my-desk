@@ -1,6 +1,14 @@
 import { useState } from "react";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
+} from "firebase/auth";
+import { auth } from "../firebase/config";
 import "./Auth.css";
-import { supabase } from "../supabase/client";
 
 export default function Auth({ onLoginSuccess }) {
   const [mode, setMode] = useState("login");
@@ -12,32 +20,47 @@ export default function Auth({ onLoginSuccess }) {
   const [notice, setNotice] = useState("");
 
   const submit = async (event) => {
-    event.preventDefault(); setError(""); setNotice(""); setLoading(true);
+    event.preventDefault();
+    setError("");
+    setNotice("");
+    setLoading(true);
+    const cleanEmail = email.trim().toLowerCase();
+
     try {
-      const cleanEmail = email.trim().toLowerCase();
       if (mode === "reset") {
-        const { error: resetError } = await supabase.auth.resetPasswordForEmail(cleanEmail, { redirectTo: `${window.location.origin}/rankvault/` });
-        if (resetError) throw resetError;
-        setNotice("Password reset link sent. Check your email.");
+        await sendPasswordResetEmail(auth, cleanEmail, { url: window.location.origin });
+        setNotice("Password reset link sent. Check your email inbox and spam folder.");
       } else if (mode === "signup") {
-        const { error: signupError } = await supabase.auth.signUp({
-          email: cleanEmail,
-          password,
-          options: { data: { full_name: name.trim() }, emailRedirectTo: `${window.location.origin}/rankvault/` },
-        });
-        if (signupError) throw signupError;
-        setNotice("Account created. Verify your email, then sign in using the same account on My Study Desk and RankWorld AI.");
+        const credential = await createUserWithEmailAndPassword(auth, cleanEmail, password);
+        if (name.trim()) await updateProfile(credential.user, { displayName: name.trim() });
+        await sendEmailVerification(credential.user, { url: window.location.origin });
+        await signOut(auth);
+        setNotice("Account created. Verify your email, then sign in.");
         setMode("login");
       } else {
-        const { data, error: loginError } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
-        if (loginError) throw loginError;
-        if (!data.session) throw new Error("Sign-in succeeded but no session was returned. Try again.");
-        onLoginSuccess?.(data.user);
+        const credential = await signInWithEmailAndPassword(auth, cleanEmail, password);
+        if (!credential.user.emailVerified) {
+          await signOut(auth);
+          setError("Please verify your email first. Open the verification link sent to your inbox.");
+          return;
+        }
+        onLoginSuccess?.(credential.user);
       }
     } catch (err) {
-      const message = String(err.message || "Authentication failed.");
-      setError(message.includes("Invalid login credentials") ? "Email or password is incorrect." : message);
-    } finally { setLoading(false); }
+      const code = err?.code || "";
+      const messages = {
+        "auth/invalid-credential": "Email or password is incorrect. If this is an older account, use Forgot password to set its Firebase password.",
+        "auth/user-not-found": "No Firebase account found with this email. Create an account first.",
+        "auth/wrong-password": "Email or password is incorrect. If this is an older account, use Forgot password to set its Firebase password.",
+        "auth/email-already-in-use": "This email already has a Firebase account. Use Forgot password to set or reset its password.",
+        "auth/weak-password": "Use a password with at least 8 characters.",
+        "auth/invalid-email": "Enter a valid email address.",
+        "auth/too-many-requests": "Too many attempts. Wait a while and try again.",
+      };
+      setError(messages[code] || err.message || "Authentication failed.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return <div className="auth-container">
@@ -45,7 +68,7 @@ export default function Auth({ onLoginSuccess }) {
     <div className="auth-card cyber-unveil">
       <div className="auth-header"><h2><span className="sparkle">⚡</span> RankWorld <span className="highlight-brand">AI</span></h2>
         <p>{mode === "signup" ? "Create your student account" : mode === "reset" ? "Reset your password" : "Sign in to your RankWorld AI account"}</p></div>
-      {error && <p className="error-text">{error}</p>}{notice && <p className="auth-notice">{notice}</p>}
+      {error && <p className="error-text" role="alert">{error}</p>}{notice && <p className="auth-notice" role="status">{notice}</p>}
       <form className="auth-form" onSubmit={submit}>
         {mode === "signup" && <input className="modern-input auth-email-input" value={name} onChange={e=>setName(e.target.value)} placeholder="Full name" autoComplete="name" required />}
         <input className="modern-input auth-email-input" type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email address" autoComplete="email" required />
@@ -57,7 +80,7 @@ export default function Auth({ onLoginSuccess }) {
         {mode !== "login" && <button type="button" onClick={()=>{setMode("login");setError("");setNotice("");}}>Back to sign in</button>}
         {mode !== "reset" && <button type="button" onClick={()=>{setMode(mode === "signup" ? "login" : "signup");setError("");setNotice("");}}>{mode === "signup" ? "Already have an account? Sign in" : "New here? Create account"}</button>}
       </div>
-      <div className="auth-footer"><p>One account for My Study Desk and RankWorld AI.</p><p>By continuing, you agree to our <span className="highlight-purple">Terms</span> &amp; <span className="highlight-purple">Privacy Policy</span></p></div>
+      <div className="auth-footer"><p>One Firebase account for RankWorld AI and My Study Desk.</p><p>By continuing, you agree to our <span className="highlight-purple">Terms</span> &amp; <span className="highlight-purple">Privacy Policy</span></p></div>
     </div>
   </div>;
 }
