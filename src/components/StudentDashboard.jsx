@@ -276,6 +276,13 @@ const StudentDashboard = ({ onLogout, onNavigate, userProfile, profileLoading, p
         )}
       </div>
       
+      <nav className="mobile-student-nav" aria-label="Student navigation">
+        <button type="button" onClick={() => onNavigate('student-dashboard')}><span>⌂</span><small>Home</small></button>
+        <button type="button" onClick={() => onNavigate('mock-tests')}><span>◎</span><small>Tests</small></button>
+        <button type="button" onClick={() => onNavigate('backlog-manager')}><span>▤</span><small>Planner</small></button>
+        <button type="button" onClick={() => onNavigate('qbank')}><span>▣</span><small>Vault</small></button>
+        <button type="button" onClick={() => onNavigate('leaderboard')}><span>♛</span><small>Rank</small></button>
+      </nav>
     </div>
   );
 };
