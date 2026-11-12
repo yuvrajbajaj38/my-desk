@@ -86,7 +86,7 @@ const StudentDashboard = ({ onLogout, onNavigate, userProfile, profileLoading, p
           <div className="big-credit-wallet">
             <div className="wallet-icon">💎</div>
             <div className="wallet-details">
-              <span className="wallet-count">{userProfile?.credits ?? 0}</span>
+              <span className="wallet-count">{userProfile?.role === "admin" ? "∞ Unlimited" : (userProfile?.credits ?? 0)}</span>
               <span className="wallet-label">AI Credits Left</span>
             </div>
           </div>
