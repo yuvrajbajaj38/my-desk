@@ -2,7 +2,7 @@
   "name": "rankvault-functions",
   "description": "Server-side AI, credits, and payment verification for RankVault",
   "engines": {
-    "node": "20"
+    "node": "22"
   },
   "main": "index.js",
   "private": true,

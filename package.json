@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "set-admin": "node scripts/set-admin.js",
     "init-platform": "node scripts/init-platform.js",
-    "test": "node --test functions/test/*.test.js"
+    "test": "node --test functions/test/*.test.js functions/test/*.test.mjs"
   },
   "dependencies": {
     "@fingerprintjs/fingerprintjs": "^5.2.0",
