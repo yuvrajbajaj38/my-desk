@@ -16,6 +16,27 @@ const razorpayKeyId = defineSecret("RAZORPAY_KEY_ID");
 const razorpayKeySecret = defineSecret("RAZORPAY_KEY_SECRET");
 const razorpayWebhookSecret = defineSecret("RAZORPAY_WEBHOOK_SECRET");
 
+// One-time bootstrap restricted to the exact pre-approved Firebase UID and verified email.
+exports.claimInitialAdmin = onCall(async (request) => {
+  requireUser(request);
+  const expectedUid = "JbvB5cvhDlejO4ockaBwHqrY9V63";
+  const expectedEmail = "yuvrajbajaj38@gmail.com";
+  if (request.auth.uid !== expectedUid ||
+      String(request.auth.token.email || "").toLowerCase() !== expectedEmail ||
+      request.auth.token.email_verified !== true) {
+    throw new HttpsError("permission-denied", "This account is not authorized for initial admin setup.");
+  }
+  const user = await getAuth().getUser(expectedUid);
+  if (user.disabled || !user.emailVerified) {
+    throw new HttpsError("failed-precondition", "Admin account must be enabled and email-verified.");
+  }
+  await getAuth().setCustomUserClaims(expectedUid, {
+    ...(user.customClaims || {}),
+    admin: true,
+  });
+  return { success: true };
+});
+
 function requireAdmin(request) {
   requireUser(request);
   if (request.auth.token.admin !== true) {
@@ -141,7 +162,11 @@ exports.adminListUsers = onCall(async (request) => {
   requireAdmin(request);
   const pageSize = Math.min(Math.max(Number(request.data?.pageSize) || 50, 1), 100);
   const result = await getAuth().listUsers(pageSize);
-  return { users: result.users.map((u) => ({ uid: u.uid, email: u.email || "", displayName: u.displayName || "", disabled: u.disabled })) };
+  const users = await Promise.all(result.users.map(async (u) => {
+    const snap = await db.collection("users").doc(u.uid).get();
+    return { uid: u.uid, email: u.email || "", displayName: u.displayName || "", disabled: u.disabled, credits: Number(snap.data()?.credits || 0), role: snap.data()?.role || "student" };
+  }));
+  return { users };
 });
 
 exports.adminUpdateUser = onCall(async (request) => {
@@ -154,6 +179,32 @@ exports.adminUpdateUser = onCall(async (request) => {
   await db.collection("users").doc(uid).set({ accountStatus: action === "disable" ? "disabled" : "active", updatedAt: FieldValue.serverTimestamp() }, { merge: true });
   return { success: true };
 });
+exports.adminGrantCredits = onCall(async (request) => {
+  requireAdmin(request);
+  const uid = String(request.data?.uid || "").trim();
+  const amount = Math.floor(Number(request.data?.amount));
+  if (!uid || !Number.isSafeInteger(amount) || amount < 1 || amount > 10000000) {
+    throw new HttpsError("invalid-argument", "Choose a student and enter credits between 1 and 10,000,000.");
+  }
+  if (uid === request.auth.uid) {
+    throw new HttpsError("failed-precondition", "Admin already has unlimited AI credits.");
+  }
+  const userRef = db.collection("users").doc(uid);
+  await db.runTransaction(async (tx) => {
+    const snap = await tx.get(userRef);
+    if (!snap.exists) throw new HttpsError("not-found", "Student profile was not found.");
+    const current = Number(snap.data().credits || 0);
+    tx.set(userRef, { credits: current + amount, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+    tx.set(userRef.collection("creditLedger").doc(), {
+      type: "admin_grant",
+      amount,
+      grantedBy: request.auth.uid,
+      createdAt: FieldValue.serverTimestamp(),
+    });
+  });
+  return { success: true, uid, amount };
+});
+
 
 
 
@@ -317,8 +368,9 @@ function requireAnswerForType(artifactType) {
   return artifactType === "ai-mock" || artifactType === "notes-ai-mock";
 }
 
-async function debitCredits(uid, jobType, units = 1) {
+async function debitCredits(uid, jobType, units = 1, isAdmin = false) {
   const cost = (CREDIT_COSTS[jobType] || 1) * units;
+  if (isAdmin) return 0;
   const userRef = db.collection("users").doc(uid);
 
   await db.runTransaction(async (tx) => {
