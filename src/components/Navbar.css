@@ -106,3 +106,24 @@
     animation: none !important;
   }
 }
+
+@media (max-width: 640px) {
+  .navbar { padding: 12px 15px; display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .logo { font-size: 19px; }
+  .logo-icon { width: 30px; height: 30px; }
+  .nav-links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px 6px; padding: 4px 0; }
+  .nav-links li { font-size: .78rem; text-align: center; padding: 7px 3px; border-radius: 8px; background: rgba(255,255,255,.035); }
+  .nav-actions { justify-content: space-between; gap: 12px; }
+  .get-started-btn { padding: 9px 15px; }
+}
+@media (max-width: 640px) {
+  .hero-section { flex-direction: column; align-items: stretch; padding: 28px 18px; gap: 8px; }
+  .hero-left { max-width: none; }
+  .hero-title { font-size: clamp(2rem, 9vw, 2.6rem); }
+  .hero-subtitle { font-size: .9rem; }
+  .hero-buttons { flex-direction: column; }
+  .hero-buttons button { width: 100%; min-height: 46px; }
+  .hero-right { display: none; }
+  .dashboard-wrapper { display: none; }
+  .footer { padding: 20px 14px; text-align: center; }
+}
