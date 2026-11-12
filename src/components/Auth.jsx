@@ -18,6 +18,7 @@ export default function Auth({ onLoginSuccess }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const submit = async (event) => {
     event.preventDefault();
@@ -50,9 +51,9 @@ export default function Auth({ onLoginSuccess }) {
     } catch (err) {
       const code = err?.code || "";
       const messages = {
-        "auth/invalid-credential": "Email or password is incorrect. If this is an older account, use Forgot password to set its Firebase password.",
+        "auth/invalid-credential": "Firebase rejected this email/password combination. If this account was created earlier or its password is unknown, send a password reset link below.",
         "auth/user-not-found": "No Firebase account found with this email. Create an account first.",
-        "auth/wrong-password": "Email or password is incorrect. If this is an older account, use Forgot password to set its Firebase password.",
+        "auth/wrong-password": "Password does not match this Firebase account. Send a password reset link below and create a new password.",
         "auth/email-already-in-use": "This email already has a Firebase account. Use Forgot password to set or reset its password.",
         "auth/weak-password": "Use a password with at least 8 characters.",
         "auth/invalid-email": "Enter a valid email address.",
@@ -73,9 +74,10 @@ export default function Auth({ onLoginSuccess }) {
       <form className="auth-form" onSubmit={submit}>
         {mode === "signup" && <input className="modern-input auth-email-input" value={name} onChange={e=>setName(e.target.value)} placeholder="Full name" autoComplete="name" required />}
         <input className="modern-input auth-email-input" type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email address" autoComplete="email" required />
-        {mode !== "reset" && <input className="modern-input auth-email-input" type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password (minimum 8 characters)" autoComplete={mode === "signup" ? "new-password" : "current-password"} minLength={8} required />}
+        {mode !== "reset" && <div className="auth-password-wrap"><input className="modern-input auth-email-input" type={showPassword ? "text" : "password"} value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password (minimum 8 characters)" autoComplete={mode === "signup" ? "new-password" : "current-password"} minLength={8} required /><button className="password-visibility" type="button" onClick={()=>setShowPassword(value=>!value)} aria-label={showPassword ? "Hide password" : "Show password"}>{showPassword ? "Hide" : "Show"}</button></div>}
         <button type="submit" className="btn-primary auth-btn glow-button" disabled={loading}>{loading ? "Please wait…" : mode === "signup" ? "Create Account" : mode === "reset" ? "Send Reset Link" : "Sign In"}</button>
       </form>
+      {mode === "login" && error && <button className="auth-reset-quick" type="button" onClick={()=>{setMode("reset");setError("");setNotice("");}}>Send password reset email →</button>}
       <div className="auth-switches">
         {mode === "login" && <button type="button" onClick={()=>{setMode("reset");setError("");setNotice("");}}>Forgot password?</button>}
         {mode !== "login" && <button type="button" onClick={()=>{setMode("login");setError("");setNotice("");}}>Back to sign in</button>}
